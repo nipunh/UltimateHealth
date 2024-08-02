@@ -1,11 +1,13 @@
-import {View, Image, Text, StyleSheet} from 'react-native';
-import React from 'react';
-import { LineChart } from "react-native-gifted-charts";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { PRIMARY_COLOR } from '../helper/Theme';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {BarChart} from 'react-native-gifted-charts';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {PRIMARY_COLOR} from '../helper/Theme';
+import MonthPicker from 'react-native-month-year-picker';
+import moment from 'moment';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const ActivityOverview = () => {
-
   const backgroundStyle = {
     //backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     backgroundColor: PRIMARY_COLOR,
@@ -13,73 +15,106 @@ const ActivityOverview = () => {
 
   const data = [
     {
-      value: 2500,
+      value: 25,
       frontColor: '#006DFF',
       gradientColor: '#009FFF',
-      spacing: 6,
+      spacing: 1,
       label: 'Jan',
     },
-    {value: 2400, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
+    {value: 24, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
 
     {
-      value: 3500,
+      value: 35,
       frontColor: '#006DFF',
       gradientColor: '#009FFF',
-      spacing: 6,
+      spacing: 1,
       label: 'Feb',
     },
-    {value: 3000, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
+    {value: 30, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
 
     {
-      value: 4500,
+      value: 45,
       frontColor: '#006DFF',
       gradientColor: '#009FFF',
-      spacing: 6,
+      spacing: 1,
       label: 'Mar',
     },
-    {value: 4000, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
+    {value: 40, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
 
     {
-      value: 5200,
+      value: 52,
       frontColor: '#006DFF',
       gradientColor: '#009FFF',
-      spacing: 6,
+      spacing: 1,
       label: 'Apr',
     },
-    {value: 4900, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
+    {value: 49, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
 
     {
-      value: 3000,
+      value: 30,
       frontColor: '#006DFF',
       gradientColor: '#009FFF',
-      spacing: 6,
+      spacing: 1,
       label: 'May',
     },
-    {value: 2800, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
+    {value: 28, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
   ];
 
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
+
+  const showPicker = useCallback(value => setShow(value), []);
+
+  const onValueChange = useCallback(
+    (event, newDate) => {
+      const selectedDate = newDate || date;
+
+      showPicker(false);
+      setDate(selectedDate);
+    },
+    [date, showPicker],
+  );
 
   return (
     <SafeAreaView style={styles.scrollViewContentContainer}>
-    <Text style={{ fontSize: 18, fontFamily: '500'}}>
-        Monthly
-    </Text>
-    <Text style={{ fontSize: 12, fontFamily: '500'}}>
+      <Text style={{fontSize: 18, fontWeight: 'bold'}}>Monthly</Text>
+      <Text style={{fontSize: 12, fontFamily: '500'}}>
         Date - Date Updated hourly
-    </Text>
+      </Text>
 
-    <Text style={{ fontSize: 12, fontFamily: '500'}}>
-        Total Views
-    </Text>
+        <TouchableOpacity onPress={() => showPicker(true)}>
+          <View style={styles.dateContainer}>
+            <Text style={styles.margin}>{`${moment(date).format(
+              'MMMM',
+            )} - ${moment(date).format('YYYY')}`}</Text>
+            <Icon
+              name="caret-down-outline"
+              size={20}
+              // color={isDarkMode ? 'white' : 'black'}
+            />
+          </View>
+        </TouchableOpacity>
 
-    <Text style={{ fontSize: 12, fontFamily: '500'}}>
-        Total Reads
-    </Text>
-
-          <LineChart 
-          data={data}
+        {show && (
+          <MonthPicker
+            onChange={onValueChange}
+            value={date}
+            mode="full"
+            // minimumDate={new Date()}
+            // maximumDate={new Date(2025, 5)}
+            locale="ko"
           />
-  </SafeAreaView>
+        )}
+
+      <View style={styles.statsView}>
+        <Text style={{fontSize: 12}}>Total Views</Text>
+        <Text style={{fontSize: 12}}>Total Reads</Text>
+      </View>
+
+      <View style={styles.chartContainer}>
+        <BarChart data={data} />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -89,13 +124,42 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
+  margin: {
+    marginHorizontal: 8,
+  },
+  dateContainer: {
+    width : "100%",
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'thistle',
+    borderRadius: 50,
+    padding: 5,
+    marginVertical: 18,
+  },
   buttonContainer: {
     flexDirection: 'row',
     paddingHorizontal: 6,
   },
+  chartContainer: {
+    padding: 5,
+    marginVertical: 5,
+    overflow: 'scroll',
+  },
   scrollViewContentContainer: {
+    flexDirection : "column",
+    justifyContent : "flex-start",
+    alignItems : "flex-start",
     paddingHorizontal: 16,
     marginTop: 16,
+  },
+  statsView: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    paddingVertical: 10,
   },
   button: {
     height: 40,
@@ -112,21 +176,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 15,
     textTransform: 'capitalize',
-  },
-  articleContainer: {
-    flex: 1,
-    width: '100%',
-    paddingHorizontal: 0,
-  },
-  flatListContentContainer: {
-    paddingHorizontal: 16,
-    marginTop: 10,
-    paddingBottom: 120,
-  },
-  homePlusIconview: {
-    bottom: 100,
-    right: 25,
-    position: 'absolute',
   },
 });
 

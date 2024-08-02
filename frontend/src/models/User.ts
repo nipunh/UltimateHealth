@@ -21,7 +21,8 @@ export class UserModel extends BaseModel{
     Profile_image: string
     created_at: string
     last_updated_at: string
-
+    total_views : number
+    total_reads : number
 }
 
 export class ContactDetail{
