@@ -7,7 +7,7 @@ import MonthPicker from 'react-native-month-year-picker';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const ActivityOverview = () => {
+const ActivityOverview = ({user}: {user: User | undefined}) => {
   const backgroundStyle = {
     //backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     backgroundColor: PRIMARY_COLOR,
@@ -60,6 +60,9 @@ const ActivityOverview = () => {
     {value: 28, frontColor: '#3BE9DE', gradientColor: '#93FCF8'},
   ];
 
+  const totalViews = 10;
+  const totalReads = 20;
+
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 
@@ -77,34 +80,51 @@ const ActivityOverview = () => {
 
   return (
     <SafeAreaView style={styles.scrollViewContentContainer}>
-      <Text style={{fontSize: 18, fontWeight: 'bold'}}>Monthly</Text>
+     <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+        Monthly
+      </Text>
       <Text style={{fontSize: 12, fontFamily: '500'}}>
         Date - Date Updated hourly
       </Text>
 
-        <TouchableOpacity onPress={() => showPicker(true)}>
-          <View style={styles.dateContainer}>
-            <Text style={styles.margin}>{`${moment(date).format(
-              'MMMM',
-            )} - ${moment(date).format('YYYY')}`}</Text>
-            <Icon
-              name="caret-down-outline"
-              size={20}
+      <TouchableOpacity onPress={() => showPicker(true)}>
+        <View style={styles.dateContainer}>
+          <Text style={styles.margin}>{`${moment(date).format(
+            'MMMM',
+          )} - ${moment(date).format('YYYY')}`}</Text>
+          <Icon
+            name="caret-down-outline"
+            size={20}
               // color={isDarkMode ? 'white' : 'black'}
             />
           </View>
-        </TouchableOpacity>
+      </TouchableOpacity>
 
-        {show && (
-          <MonthPicker
-            onChange={onValueChange}
-            value={date}
-            mode="full"
-            // minimumDate={new Date()}
-            // maximumDate={new Date(2025, 5)}
-            locale="ko"
-          />
-        )}
+      {show && (
+        <MonthPicker
+          onChange={onValueChange}
+          value={date}
+          mode="full"
+          // minimumDate={new Date()}
+          // maximumDate={new Date(2025, 5)}
+          locale="ko"
+        />
+      )}
+
+      <View style={styles.statsContainer}>
+        <View style={styles.statsView}>
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+            {totalViews}
+          </Text>
+          <Text style={{fontSize: 12, color: 'black'}}>Total Views</Text>
+        </View>
+        <View style={styles.statsView}>
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+            {totalReads}
+          </Text>
+          <Text style={{fontSize: 12, color: 'black'}}>Total Reads</Text>
+        </View>
+      </View>
 
       <View style={styles.statsView}>
         <Text style={{fontSize: 12}}>Total Views</Text>
@@ -149,17 +169,23 @@ const styles = StyleSheet.create({
     overflow: 'scroll',
   },
   scrollViewContentContainer: {
-    flexDirection : "column",
-    justifyContent : "flex-start",
-    alignItems : "flex-start",
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     paddingHorizontal: 16,
     marginTop: 16,
   },
-  statsView: {
+  statsContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingVertical: 10,
+    gap: 10,
+  },
+  statsView: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   button: {
     height: 40,
