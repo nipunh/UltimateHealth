@@ -105,7 +105,7 @@ const ProfileScreen = ({navigation}) => {
               automaticallyAdjustContentInsets={true}
               contentInsetAdjustmentBehavior="always"
               contentContainerStyle={styles.scrollViewContentContainer}>
-              <ActivityOverview user = {userData} />
+              <ActivityOverview />
             </Tabs.ScrollView>
           </Tabs.Tab>
           {/* Tab 2 */}
