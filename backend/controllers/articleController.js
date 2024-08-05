@@ -1,19 +1,19 @@
 const ArticleTag = require("../models/ArticleModel");
 const Article = require("../models/Articles");
+const User = require("../models/UserModel");
 
 // Create a new article
 module.exports.createArticle = async (req, res) => {
   try {
+    const user = await User.findById(req.body.authorId);
     const newArticle = new Article(req.body);
+    console.log("user:", req.body.authorId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
-    await newArticle.save();
-    // Update the article
-    const user = await User.findById(req.authorId);
     user.articles.push(newArticle._id);
     await user.save();
+    await newArticle.save();
 
     res
       .status(201)
